@@ -5,6 +5,7 @@ var app = angular.module( "yourapp" );
 app.controller( "NavigationCtrl",
                 function( $scope,
                           $rootScope,
+                          $state,
                           dialogs,
                           AuthenticationService ) {
 
@@ -43,5 +44,6 @@ app.controller( "NavigationCtrl",
         AuthenticationService.logout();
     };
 
+    $scope.$state = $state;
 } );
 

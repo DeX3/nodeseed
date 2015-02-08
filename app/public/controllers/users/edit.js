@@ -4,13 +4,13 @@ var app = angular.module( "yourapp" );
 
 app.controller( "UserEditCtrl",
                 function( $scope,
-                          $routeParams,
+                          $stateParams,
                           User ) {
 
-    if( $routeParams.id === "create" ) {
+    if( $stateParams.id === "create" ) {
         $scope.user = new User();
     } else {
-        User.$get( $routeParams.id ).then( function( user ) {
+        User.$get( $stateParams.id ).then( function( user ) {
             $scope.user = user;
 
             User.fetchLoggedInUser().then( function(user) {

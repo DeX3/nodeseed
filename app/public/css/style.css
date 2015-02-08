@@ -1,6 +1,9 @@
 body {
   padding-top: 50px; }
 
+.breadcrumb {
+  margin-top: 10px; }
+
 .login-form div.input-group {
   margin-bottom: 20px; }
 

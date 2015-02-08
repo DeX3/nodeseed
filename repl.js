@@ -21,9 +21,6 @@ if( ["development",
 }
 
 var glob = require( "glob" );
-
-var controllers = require( "./app/controllers/controllers" );
-
 var bookshelf = require("./app/models/BaseModel");
 
 // returns all files in the given directory (and subdirectories) that have the
@@ -64,6 +61,7 @@ bookshelf.onSchemaLoaded( function() {
         var name = controller.substring( 0, controller.length - ext.length );
         server.context[name] = require( "./app/controllers/" + controller );
     } );
+
 
 } );
 

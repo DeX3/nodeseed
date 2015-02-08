@@ -7,7 +7,6 @@ var expect = chai.expect;
 
 var User = require( "../../app/models/User" );
 var apiutils = require( "../api/testutils" );
-var e2eutils = require( "./testutils" );
 
 describe( "homepage", function() {
     beforeEach( function() {

@@ -48,6 +48,7 @@ module.exports = function( grunt ) {
                         "app/public/**/*.html",
                         "app/public/**/*.css",
                         "app/public/**/*.js"],
+                tasks: ["lint"],
                 options: { livereload: true }
             },
             sass: {
@@ -61,7 +62,7 @@ module.exports = function( grunt ) {
                         "app/controllers/**/*.js"],
                         // actual test files will be added dynamically by
                         // test tasks
-                tasks: ["mochaTest"]
+                tasks: ["lint", "mochaTest"]
             }
         },
         focus: {
@@ -135,7 +136,7 @@ module.exports = function( grunt ) {
                 options: {
                     args: ["run"]
                 }
-            }
+            },
         },
         jshint: {
             all: ["app.js",
@@ -270,6 +271,10 @@ module.exports = function( grunt ) {
                         "Generate project documentation in doc/",
                         "jsdoc" );
 
+    grunt.registerTask( "console:production",
+                        "Start the REPL",
+                        ["env:production", "execute:repl"] );
+
     var envs = ["development", "test", "production"];
     var knexCommands = ["latest", "rollback", "currentVersion"];
 
@@ -387,7 +392,6 @@ module.exports = function( grunt ) {
         } else {
             grunt.task.run( "mochaTest" );
         }
-
     } );
 
     grunt.registerTask( "test:api:continuous",

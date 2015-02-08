@@ -2,7 +2,7 @@
 
 var app = angular.module( "yourapp" );
 
-app.controller( "UserListCtrl",
+app.controller( "UserIndexCtrl",
                 function( $scope,
                           User ) {
 

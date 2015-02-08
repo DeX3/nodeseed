@@ -32,7 +32,6 @@ var glob = require( "glob" );
 var _ = require( "underscore" );
 
 var routes = require( "./app/routes" );
-var controllers = require( "./app/controllers/controllers" );
 
 var app = express();
 
@@ -49,8 +48,6 @@ app.use( session({
 
 var bookshelf = require("./app/models/BaseModel");
 app.set( "bookshelf", bookshelf ); 
-
-app.set( "controllers", controllers );
 
 app.set( "views", "app/views" );
 app.set( "view engine", "ejs" );

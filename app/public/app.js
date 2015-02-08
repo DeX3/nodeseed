@@ -1,5 +1,6 @@
 angular.module( "yourapp", [
-    "ngRoute",
+    "ui.router",
+    "ncy-angular-breadcrumb",
     "ngResource",
     "ngCookies",
     "ui.bootstrap"
