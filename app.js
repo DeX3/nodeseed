@@ -24,18 +24,26 @@ if( ["development",
 }
 
 var express = require( "express" );
+var expressWinston = require( "express-winston" );
 var bodyParser = require( "body-parser" );
 var cookieParser = require( "cookie-parser" );
 var session = require( "express-session" );
 var config = require( "config" );
 var glob = require( "glob" );
 var _ = require( "underscore" );
+var logger = require( "./app/logger" );
 
 var routes = require( "./app/routes" );
 
 var app = express();
 
-app.use( config.get("logger") );
+app.use( expressWinston.logger({
+    winstonInstance: logger,
+    msg: config.get( "logging.requests.format" ),
+    meta: config.get( "logging.requests.meta" )
+}) );
+
+expressWinston.bodyBlacklist.push( "_redmine_session" );
 
 app.use( bodyParser.json() );
 app.use( cookieParser("yourappsecret") );
@@ -72,6 +80,10 @@ app.locals.ngFilters = filesIn( "app/public/filters", ".js" );
 app.locals.utils = filesIn( "app/public/utils", ".js" );
 
 routes.setup( app );
+
+app.use( expressWinston.errorLogger({
+    winstonInstance: logger,
+}) );
 
 app.locals.appinfo = {
     environment: process.env.NODE_ENV

@@ -2,6 +2,7 @@
 
 var BaseController = require( "./BaseController" );
 var User = require( "../models/User" );
+var logger = require( "../logger" );
 var CheckitError = require( "checkit" ).Error;
 var _ = require( "underscore" );
 var BPromise = require( "bluebird" );
@@ -17,7 +18,15 @@ module.exports = BaseController.extend( {
 
     index: function( req, res ) {
 
-        req.session.user.can( "manage_users" ).bind( this ).then( function() {
+        req.session.user.can(
+            "manage_users"
+        ).bind( this ).then( function( permitted ) {
+
+            if( !permitted ) {
+                res.status( 403 ).send();
+                return;
+            }
+
             var query = User.query();
             var p;
 
@@ -26,18 +35,17 @@ module.exports = BaseController.extend( {
                 results.items = results.items.map( function(user) {
                     return _.omit( user.toJSON(), User.sensitiveData );
                 } );
-               
+
                 return results;
             } );
 
-            p.then( function( results ) {
+            return p.then( function( results ) {
                 res.json( results );
-            } ).catch( function( error ) {
-                console.error( error );
-                res.status( 500 ).json( error );
             } );
-        } ).catch( function( err ) {
-            res.status( 403 ).send();
+
+        }, function( err ) {
+            logger.error( err );
+            res.status( 500 ).send();
         } );
     },
 
@@ -64,7 +72,7 @@ module.exports = BaseController.extend( {
                                   "deleted") );
             }
         } ).catch( function(error) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).json( error );
         } );
     },
@@ -91,7 +99,7 @@ module.exports = BaseController.extend( {
                 res.status( 200 ).send();
             }
         } ).catch( function( error ) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 );
         } );
 
@@ -112,7 +120,7 @@ module.exports = BaseController.extend( {
         } ).then( function() {
             res.status( 200 ).send();
         } ).catch( function(error) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).send();
         } );
 
@@ -120,19 +128,22 @@ module.exports = BaseController.extend( {
 
     create: function( req, res ) {
 
-        req.session.user.can( "manage_users" ).then( function() {
+        req.session.user.can( "manage_users" ).then( function( permitted ) {
+
+            if( !permitted ) {
+                res.status( 403 ).send();
+                return;
+            }
 
             var u = new User( req.body );
             return u.save().then( function() {
                 res.status( 201 ).send();
             } ).catch( CheckitError, function( error ) {
                 res.status( 400 ).json( error );
-            } ).catch( function( error ) {
-                res.status( 500 ).send(); 
             } );
 
-        } ).catch( function() {
-            res.status( 403 ).send();
+        } ).catch( function( error ) {
+            res.status( 500 ).send(); 
         } );
     },
 
@@ -149,9 +160,8 @@ module.exports = BaseController.extend( {
         
         query.fetch().then( function( user ) {
 
-            return req.session.user.can( "manage_users" ).then(
-                function() { return true; },
-                function() { return false; }
+            return req.session.user.can(
+                "manage_users"
             ).then( function( canChangeOthers ) {
 
                 if( !user ) {
@@ -181,7 +191,7 @@ module.exports = BaseController.extend( {
                 res.send();
             }
         } ).catch( function(error) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).json( error );
         } );
     },
@@ -220,7 +230,7 @@ module.exports = BaseController.extend( {
                 req.session.user = user;
                 next();
             } ).catch( function( error ) {
-                console.error( error );
+                logger.error( error );
                 next( error );
             } );
         }

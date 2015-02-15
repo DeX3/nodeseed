@@ -5,6 +5,7 @@
 "use strict";
 var CheckitError = require( "checkit" ).Error;
 var BPromise = require( "bluebird" );
+var logger = require( "../logger" );
 var _ = require( "underscore" );
 
 function extend( Parent, instanceProps, staticProps ) {
@@ -136,7 +137,7 @@ var Controller = function() {
         p.then( function( results ) {
             res.json( results );
         } ).catch( function(error) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).json( error );
         } );
         
@@ -186,7 +187,7 @@ var Controller = function() {
         } ).catch( CheckitError, function( error ) {
             res.status( 400 ).json( error );
         } ).catch( function(error) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).json( error );
         } );
     };
@@ -218,7 +219,7 @@ var Controller = function() {
         } ).catch( CheckitError, function( error ) {
             res.status( 400 ).json( error );
         } ).catch( function( error ) {
-            console.error( error );
+            logger.error( error );
             res.status( 500 ).json( error );
         } );
     };

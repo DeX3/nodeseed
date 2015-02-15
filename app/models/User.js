@@ -5,7 +5,6 @@ var bookshelf = require( "./BaseModel" );
 var crypto = require( "crypto" );
 var rand = require( "csprng" );
 var _ = require( "underscore" );
-var BPromise = require( "bluebird" );
 
 // make sure the role-model is loaded
 require( "./Role" );
@@ -66,18 +65,11 @@ var User = bookshelf.model( "User", {
         return this.fetch( {
             withRelated: ["roles","roles.permissions"]
         } ).then( function(user) {
-            var ret =_.some( user.toJSON().roles, function( role ) {
+            return _.some( user.toJSON().roles, function( role ) {
                 return _.some( role.permissions, function( p ) {
                     return p.name === permission;
                 } );
             } );
-
-            if( ret ) {
-                return true;
-            } else {
-                return BPromise.reject( false );
-            }
-            
         } );
     }
 }, {

@@ -38,7 +38,8 @@ module.exports = function( grunt ) {
                 files: ["app.js",
                         "app/*.js",
                         "app/models/**/*.js",
-                        "app/controllers/**/*.js"],
+                        "app/controllers/**/*.js",
+                        "config/**/*.*"],
                 tasks: ["lint", "express:development"],
                 options: { spawn: false }
             },

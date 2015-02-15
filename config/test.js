@@ -1,5 +1,4 @@
 var winston = require( "winston" );
-var expressWinston = require( "express-winston" );
 var path = require( "path" );
 
 var isCoverageEnabled = !!process.env.COVERAGE;
@@ -11,20 +10,25 @@ if( isCoverageEnabled ) {
 }
 
 module.exports = {
-    logger: expressWinston.logger( {
-        transports: [
-            new winston.transports.File( {
-                filename: "logs/tests.log",
-                colorize: true
-            } )
-        ]
-    } ),
     db: {
         connection: {
             database: "yourapp_test"
         }
     },
-    port: 3001
+    port: 3001,
+    logging: {
+        transports: [
+            new winston.transports.File( {
+                filename: "logs/tests.log",
+                colorize: true,
+                json: false,
+                prettyPrint: true
+            } )
+        ],
+        requests: {
+            meta: true
+        }
+    }
 };
 
 
